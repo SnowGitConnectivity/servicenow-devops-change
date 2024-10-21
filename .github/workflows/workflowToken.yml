@@ -1,4 +1,4 @@
-name: workflowToken
+name: Test
 
 
 on:
@@ -10,22 +10,26 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
+    timeout-minutes: 30
   
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v2
 
-    - name: Set Node.js 14.x
-      uses: actions/setup-node@v3
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
       with:
-        node-version: 14.x
+        node-version: 12.x
 
-    - name: Install dependencies
-      run: npm ci
+    
+    - run: npm install
+      name: Install Dependencies
+
+    - run: npm run build
+      name: Complile Application
       
 
-    - name: Compile
-      run: npm run build
+    
 
     
   changeApproval:
@@ -38,7 +42,8 @@ jobs:
         uses: ServiceNow/servicenow-devops-change@v3.1.0
         id: create
         with:
-          devops-integration-token: ${{ secrets.SN_DEVOPS_INTEGRATION_TOKEN }}
+          devops-integration-user-name: ${{ secrets.SN_DEVOPS_USER }}
+          devops-integration-user-password: ${{ secrets.SN_DEVOPS_PASSWORD }}
           instance-url: ${{ secrets.SN_INSTANCE_URL }}
           tool-id: ${{ secrets.SN_ORCHESTRATION_TOOL_ID }}
           context-github: ${{ toJSON(github) }}
@@ -50,7 +55,8 @@ jobs:
           abortOnChangeCreationFailure: true
           abortOnChangeStepTimeout: true
       - name: Output of Change Creation
-        run: echo "change-request-number = ${{ steps.create.outputs.change-request-number }}" >> $GITHUB_OUTPUT
+        run: echo "change-request-number = ${{ steps.create.outputs.change-request-number }} and change-request-sys-id = ${{ steps.create.outputs.change-request-sys-id }} " >> $GITHUB_OUTPUT
+    
   deploy:
     name: Deploy
     needs: changeApproval
@@ -59,3 +65,18 @@ jobs:
     steps:     
       - name: Run Deployment Script
         run: echo "Deployment Finished....."
+
+  registerartifact:
+    name: Register Artifact
+    runs-on: ubuntu-latest
+    steps:
+      - name: ServiceNow Register Artifact
+        uses: ServiceNow/servicenow-devops-register-artifact@v3.1.0
+        with:
+          devops-integration-user-name: ${{ secrets.SN_DEVOPS_USER }}
+          devops-integration-user-password: ${{ secrets.SN_DEVOPS_PASSWORD }}
+          instance-url: ${{ secrets.SN_INSTANCE_URL }}
+          tool-id: ${{ secrets.SN_ORCHESTRATION_TOOL_ID }}
+          context-github: ${{ toJSON(github) }}
+          job-name: 'Register Artifact'
+          artifacts: '[{"name": "com:customactiondemo","version": "1.${{ github.run_number }}","semanticVersion": "1.${{ github.run_number }}.0","repositoryName": "${{ github.repository }}"}]'
