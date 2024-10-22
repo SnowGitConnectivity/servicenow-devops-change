@@ -8,7 +8,7 @@ on:
 jobs:
 
   build:
-    name: Build
+    name: Staging_Deployment
     runs-on: ubuntu-latest
     timeout-minutes: 30
   
@@ -33,12 +33,12 @@ jobs:
 
     
   changeApproval:
-    name: ServiceNow Change Approval
+    name: Approval From ServiceNow
     needs: build
     runs-on: ubuntu-latest
 
     steps:     
-      - name: ServiceNow Change Approval
+      - name: Approval From ServiceNow
         uses: ServiceNow/servicenow-devops-change@v3.1.0
         id: create
         with:
@@ -47,7 +47,7 @@ jobs:
           instance-url: ${{ secrets.SN_INSTANCE_URL }}
           tool-id: ${{ secrets.SN_ORCHESTRATION_TOOL_ID }}
           context-github: ${{ toJSON(github) }}
-          job-name: 'ServiceNow Change Approval'
+          job-name: 'Approval From ServiceNow'
           change-request: '{"setCloseCode":"true","autoCloseChange":"true","attributes":{"short_description":"Automated Software Deployment","description":"Automated Software Deployment.","assignment_group":"a715cd759f2002002920bde8132e7018","implementation_plan":"Software update is tested and results can be found in Test Summaries Tab; When the change is approved the implementation happens automated by the CICD pipeline within the change planned start and end time window.","backout_plan":"When software fails in production, the previous software release will be re-deployed.","test_plan":"Testing if the software was successfully deployed"}}'
           interval: '100'
           timeout: '60'
@@ -58,13 +58,13 @@ jobs:
         run: echo "change-request-number = ${{ steps.create.outputs.change-request-number }} and change-request-sys-id = ${{ steps.create.outputs.change-request-sys-id }} " >> $GITHUB_OUTPUT
     
   deploy:
-    name: Deploy
+    name: Production_Deployment
     needs: changeApproval
     runs-on: ubuntu-latest
 
     steps:     
       - name: Run Deployment Script
-        run: echo "Deployment Finished....."
+        run: echo "Production Deployment Completed....."
 
   registerartifact:
     name: Register Artifact
