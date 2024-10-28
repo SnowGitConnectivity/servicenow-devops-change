@@ -41,9 +41,11 @@ jobs:
         - name: Register Unit Test Results in ServiceNow
           uses: ServiceNow/servicenow-devops-change@v3.1.0
           with:
-            credentials: ${{ secrets.SERVICENOW_CREDENTIALS }}
-            instance: ${{ secrets.SERVICENOW_INSTANCE }}
-            tool_id: ${{ secrets.SERVICENOW_TOOL_ID }}
+            devops-integration-user-name: ${{ secrets.SN_DEVOPS_USER }}
+            devops-integration-user-password: ${{ secrets.SN_DEVOPS_PASSWORD }}
+            instance-url: ${{ secrets.SN_INSTANCE_URL }}
+            tool-id: ${{ secrets.SN_ORCHESTRATION_TOOL_ID }}
+            context-github: ${{ toJSON(github) }}
             result_format: 'xml'
             result_path: 'results.xml'
       
