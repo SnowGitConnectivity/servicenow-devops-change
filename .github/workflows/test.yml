@@ -97,16 +97,21 @@ jobs:
   #         xml-report-filename: target/Testing Report/testng-results.xml
   
     # Step 1: Run Tests and Generate XML
-      - name: Run Tests and Output XML
-        run:  echo "<testsuites><testsuite name='Example'><testcase name='Test 1'/></testsuite></testsuites>" > results.xml
+  testresults:
+    name: Extract of Testing Results
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+        - name: Extract of Testing Results
+          run:  echo "<testsuites><testsuite name='Example'><testcase name='Test 1'/></testsuite></testsuites>" > results.xml
         # Replace with your actual test command
 
     # Step 2: Register Unit Test Results in ServiceNow
-      - name: Register Unit Test Results in ServiceNow
-        uses: ServiceNow/devops-integration-action@v4.1.0
-        with:
-         credentials: ${{ secrets.SERVICENOW_CREDENTIALS }}
-         instance: ${{ secrets.SERVICENOW_INSTANCE }}
-         tool_id: ${{ secrets.SERVICENOW_TOOL_ID }}
-         result_format: 'xml'
-         result_path: 'results.xml'
+        - name: Register Unit Test Results in ServiceNow
+          uses: ServiceNow/devops-integration-action@v4.1.0
+          with:
+            credentials: ${{ secrets.SERVICENOW_CREDENTIALS }}
+            instance: ${{ secrets.SERVICENOW_INSTANCE }}
+            tool_id: ${{ secrets.SERVICENOW_TOOL_ID }}
+            result_format: 'xml'
+            result_path: 'results.xml'
