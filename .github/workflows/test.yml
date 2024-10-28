@@ -94,4 +94,4 @@ jobs:
           tool-id: ${{ secrets.SN_ORCHESTRATION_TOOL_ID }}
           context-github: ${{ toJSON(github) }}
           job-name: 'Test Results'
-          xml-report-filename: target/reports/testing results.xml
+          xml-report-filename: target/testing results.xml
