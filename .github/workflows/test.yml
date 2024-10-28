@@ -27,6 +27,25 @@ jobs:
 
     - run: npm run build
       name: Complile Application
+
+  testresults:
+    name: Extract of Testing Results
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+        - name: Extract of Testing Results
+          run:  echo "<testsuites><testsuite name='Example'><testcase name='Test 1'/></testsuite></testsuites>" > results.xml
+        # Replace with your actual test command
+
+    # Step 2: Register Unit Test Results in ServiceNow
+        - name: Register Unit Test Results in ServiceNow
+          uses: ServiceNow/servicenow-devops-change@v3.1.0
+          with:
+            credentials: ${{ secrets.SERVICENOW_CREDENTIALS }}
+            instance: ${{ secrets.SERVICENOW_INSTANCE }}
+            tool_id: ${{ secrets.SERVICENOW_TOOL_ID }}
+            result_format: 'xml'
+            result_path: 'results.xml'
       
 
     
@@ -71,7 +90,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: ServiceNow Register Artifact
-        uses: ServiceNow/servicenow-devops-register-artifact@v3.1.0
+        uses: ServiceNow/servicenow-devops-change@v3.1.0
         with:
           devops-integration-user-name: ${{ secrets.SN_DEVOPS_USER }}
           devops-integration-user-password: ${{ secrets.SN_DEVOPS_PASSWORD }}
@@ -98,21 +117,4 @@ jobs:
   #         xml-report-filename: surefire-reports/testng-results.xml
   
     # Step 1: Run Tests and Generate XML
-  testresults:
-    name: Extract of Testing Results
-    needs: deploy
-    runs-on: ubuntu-latest
-    steps:
-        - name: Extract of Testing Results
-          run:  echo "<testsuites><testsuite name='Example'><testcase name='Test 1'/></testsuite></testsuites>" > results.xml
-        # Replace with your actual test command
 
-    # Step 2: Register Unit Test Results in ServiceNow
-        - name: Register Unit Test Results in ServiceNow
-          uses: ServiceNow/devops-integration-action@v3.1.0
-          with:
-            credentials: ${{ secrets.SERVICENOW_CREDENTIALS }}
-            instance: ${{ secrets.SERVICENOW_INSTANCE }}
-            tool_id: ${{ secrets.SERVICENOW_TOOL_ID }}
-            result_format: 'xml'
-            result_path: 'results.xml'
