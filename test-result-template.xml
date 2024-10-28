@@ -1,0 +1,5 @@
+<testsuites>
+    <testsuite name="Example">
+        <testcase name="Test 1"/>
+    </testsuite>
+</testsuites>
