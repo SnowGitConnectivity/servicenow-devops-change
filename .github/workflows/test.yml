@@ -68,20 +68,20 @@ jobs:
       - name: Run Deployment Script
         run: echo "Production Deployment Completed....."
 
-  registerartifact:
-    name: Register Artifact
-    runs-on: ubuntu-latest
-    steps:
-      - name: ServiceNow Register Artifact
-        uses: ServiceNow/servicenow-devops-register-artifact@v3.1.0
-        with:
-          devops-integration-user-name: ${{ secrets.SN_DEVOPS_USER }}
-          devops-integration-user-password: ${{ secrets.SN_DEVOPS_PASSWORD }}
-          instance-url: ${{ secrets.SN_INSTANCE_URL }}
-          tool-id: ${{ secrets.SN_ORCHESTRATION_TOOL_ID }}
-          context-github: ${{ toJSON(github) }}
-          job-name: 'Register Artifact'
-          artifacts: '[{"name": "com:customactiondemo","version": "1.${{ github.run_number }}","semanticVersion": "1.${{ github.run_number }}.0","repositoryName": "${{ github.repository }}"}]'
+  # registerartifact:
+  #   name: Register Artifact
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: ServiceNow Register Artifact
+  #       uses: ServiceNow/servicenow-devops-register-artifact@v3.1.0
+  #       with:
+  #         devops-integration-user-name: ${{ secrets.SN_DEVOPS_USER }}
+  #         devops-integration-user-password: ${{ secrets.SN_DEVOPS_PASSWORD }}
+  #         instance-url: ${{ secrets.SN_INSTANCE_URL }}
+  #         tool-id: ${{ secrets.SN_ORCHESTRATION_TOOL_ID }}
+  #         context-github: ${{ toJSON(github) }}
+  #         job-name: 'Register Artifact'
+  #         artifacts: '[{"name": "com:customactiondemo","version": "1.${{ github.run_number }}","semanticVersion": "1.${{ github.run_number }}.0","repositoryName": "${{ github.repository }}"}]'
 
   # testresults:
   #   name: Test Results
@@ -101,25 +101,25 @@ jobs:
   
     # Step 1: Run Tests and Generate XML
 
-  testresults:
-    name: Extract of Testing Results
-    needs: deploy
-    runs-on: ubuntu-latest
-    steps:
-        - name: Extract of Testing Results
-          run:  echo "<testsuites><testsuite name='Example'><testcase name='Test 1'/></testsuite></testsuites>" > results.xml
-        # Replace with your actual test command
+  # testresults:
+  #   name: Extract of Testing Results
+  #   needs: deploy
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #       - name: Extract of Testing Results
+  #         run:  echo "<testsuites><testsuite name='Example'><testcase name='Test 1'/></testsuite></testsuites>" > results.xml
+  #       # Replace with your actual test command
 
-    # Step 2: Register Unit Test Results in ServiceNow
-        - name: Register Unit Test Results in ServiceNow
-          uses: ServiceNow/servicenow-devops-change@v3.1.0
-          with:
-            devops-integration-user-name: ${{ secrets.SN_DEVOPS_USER }}
-            devops-integration-user-password: ${{ secrets.SN_DEVOPS_PASSWORD }}
-            instance-url: ${{ secrets.SN_INSTANCE_URL }}
-            tool-id: ${{ secrets.SN_ORCHESTRATION_TOOL_ID }}
-            context-github: ${{ toJSON(github) }}
-            job-name: Extract of Testing Results'
-            result_format: 'xml'
-            result_path: 'results.xml'
+  #   # Step 2: Register Unit Test Results in ServiceNow
+  #       - name: Register Unit Test Results in ServiceNow
+  #         uses: ServiceNow/servicenow-devops-change@v3.1.0
+  #         with:
+  #           devops-integration-user-name: ${{ secrets.SN_DEVOPS_USER }}
+  #           devops-integration-user-password: ${{ secrets.SN_DEVOPS_PASSWORD }}
+  #           instance-url: ${{ secrets.SN_INSTANCE_URL }}
+  #           tool-id: ${{ secrets.SN_ORCHESTRATION_TOOL_ID }}
+  #           context-github: ${{ toJSON(github) }}
+  #           job-name: Extract of Testing Results'
+  #           result_format: 'xml'
+  #           result_path: 'results.xml'
 
