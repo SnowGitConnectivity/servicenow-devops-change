@@ -21,12 +21,25 @@ jobs:
       with:
         node-version: 12.x
 
+    - name: Setup JDK 11 for Sonar Cloud
+      uses: actions/setup-java@v1
+      with:
+            java-version: 11
+      
+    - name: Maven Build
+      run: mvn clean install
+        
+    - name: Run JUnit Tests
+      run: mvn test -Dmaven.test.failure.ignore=true surefire-report:report
+
     
     - run: npm install
       name: Install Dependencies
 
     - run: npm run build
       name: Complile Application
+
+    
 
 
 
@@ -73,17 +86,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Test Results
+      - name: ServiceNow Test Action Report
         uses: ServiceNow/servicenow-devops-test-report@v3.1.0
-        with: 
-          SERVICENOW_INSTANCE: ${{ secrets.SN_INSTANCE_URL }}
-          SERVICENOW_USER: ${{ secrets.SN_DEVOPS_USER }}
-          SERVICENOW_PASSWORD: ${{ secrets.SN_DEVOPS_PASSWORD }}
-          run: |
-            curl -X POST "${{ secrets.SN_INSTANCE_URL }} /api/now/table/sn_devops_test_summary" \
-            --user "${{secrets.SN_DEVOPS_USER}}:${{secrets.SN_DEVOPS_PASSWORD }}" \
-            --header "Content-Type: application/json" \
-            --data-binary @test-results.txt
+        with:
+          devops-integration-user-name: ${{ secrets.SN_DEVOPS_USER }}
+          devops-integration-user-password: ${{ secrets.SN_DEVOPS_PASSWORD }}
+          instance-url: ${{ secrets.SN_INSTANCE_URL }}
+          tool-id: ${{ secrets.SN_ORCHESTRATION_TOOL_ID }}
+          context-github: ${{ toJSON(github) }}
+          job-name: 'ServiceNow Test Action Report'
+          xml-report-filename: target/surefire-reports/testng-results.xml
       
 
 
