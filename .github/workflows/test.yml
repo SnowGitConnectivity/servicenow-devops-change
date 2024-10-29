@@ -73,10 +73,7 @@ jobs:
 
     # steps:
       - name: Test Results
-        run: echo "Testing results are fetched"
-
-      
-        env: 
+        with: 
           SERVICENOW_INSTANCE: ${{ secrets.SN_INSTANCE_URL }}
           SERVICENOW_USER: ${{ secrets.SN_DEVOPS_USER }}
           SERVICENOW_PASSWORD: ${{ secrets.SN_DEVOPS_PASSWORD }}
