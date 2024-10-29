@@ -67,11 +67,12 @@ jobs:
       - name: Run Deployment Script
         run: echo "Production Deployment Completed....."
 
-  # testresult:
-  #   name: Test Results
-  #   runs-on: ubuntu-latest
+  testresult:
+    name: Test Results
+    needs: changeApproval
+    runs-on: ubuntu-latest
 
-    # steps:
+    steps:
       - name: Test Results
         with: 
           SERVICENOW_INSTANCE: ${{ secrets.SN_INSTANCE_URL }}
