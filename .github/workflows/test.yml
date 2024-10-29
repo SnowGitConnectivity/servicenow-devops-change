@@ -72,10 +72,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Run tests
+      - name: Test Results
         run: echo "Testing results are fetched"
 
-      - name: Upload results to ServiceNow
+      
         env: 
           SERVICENOW_INSTANCE: ${{ secrets.SN_INSTANCE_URL }}
           SERVICENOW_USER: ${{ secrets.SN_DEVOPS_USER }}
