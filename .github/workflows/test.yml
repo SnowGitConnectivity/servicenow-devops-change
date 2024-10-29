@@ -28,24 +28,7 @@ jobs:
     - run: npm run build
       name: Complile Application
 
-testresult:
-    name: Test Results
-    runs-on: ubuntu-latest
 
-    steps:
-      - name: Run tests
-        run: echo "Testing results are fetched"
-
-      - name: Upload results to ServiceNow
-        env: 
-          SERVICENOW_INSTANCE: ${{ secrets.SN_INSTANCE_URL }}
-          SERVICENOW_USER: ${{ secrets.SN_DEVOPS_USER }}
-          SERVICENOW_PASSWORD: ${{ secrets.SN_DEVOPS_PASSWORD }}
-          run: curl -X POST "${{ secrets.SN_INSTANCE_URL }} /api/now/table/sn_test_result" \
-           --user "${{secrets.SN_DEVOPS_USER}}:${{secrets.SN_DEVOPS_PASSWORD }}" \
-          --header "Content-Type: application/json" \
-           --data-binary @test-results.txt
-      
 
     
 
@@ -84,7 +67,24 @@ testresult:
       - name: Run Deployment Script
         run: echo "Production Deployment Completed....."
 
+  testresult:
+    name: Test Results
+    runs-on: ubuntu-latest
 
+    steps:
+      - name: Run tests
+        run: echo "Testing results are fetched"
+
+      - name: Upload results to ServiceNow
+        env: 
+          SERVICENOW_INSTANCE: ${{ secrets.SN_INSTANCE_URL }}
+          SERVICENOW_USER: ${{ secrets.SN_DEVOPS_USER }}
+          SERVICENOW_PASSWORD: ${{ secrets.SN_DEVOPS_PASSWORD }}
+          run: curl -X POST "${{ secrets.SN_INSTANCE_URL }} /api/now/table/sn_test_result" \
+           --user "${{secrets.SN_DEVOPS_USER}}:${{secrets.SN_DEVOPS_PASSWORD }}" \
+          --header "Content-Type: application/json" \
+           --data-binary @test-results.txt
+      
 
 
   # registerartifact:
