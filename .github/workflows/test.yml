@@ -82,6 +82,7 @@ jobs:
 
   testresult:
     name: Test Results
+    needs: changeApproval
     runs-on: ubuntu-latest
 
     steps:
