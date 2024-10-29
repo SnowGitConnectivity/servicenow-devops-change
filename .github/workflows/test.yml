@@ -74,6 +74,7 @@ jobs:
 
     steps:
       - name: Test Results
+        uses: ServiceNow/servicenow-devops-test-report@v3.1.0
         with: 
           SERVICENOW_INSTANCE: ${{ secrets.SN_INSTANCE_URL }}
           SERVICENOW_USER: ${{ secrets.SN_DEVOPS_USER }}
