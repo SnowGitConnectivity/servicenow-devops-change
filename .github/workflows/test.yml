@@ -67,11 +67,11 @@ jobs:
       - name: Run Deployment Script
         run: echo "Production Deployment Completed....."
 
-  testresult:
-    name: Test Results
-    runs-on: ubuntu-latest
+  # testresult:
+  #   name: Test Results
+  #   runs-on: ubuntu-latest
 
-    steps:
+    # steps:
       - name: Test Results
         run: echo "Testing results are fetched"
 
